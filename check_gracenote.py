@@ -97,11 +97,13 @@ def main():
     saved_state = load_state()
     saved_version = saved_state.get("version")
     saved_url = saved_state.get("url")
+    logger.info(f"保存済み状態 (state.json): バージョン={saved_version}, URL={saved_url}")
 
     is_updated = (
         current_info["version"] != saved_version or
         current_info["url"] != saved_url
     )
+
 
     if is_updated or args.force_notify:
 
