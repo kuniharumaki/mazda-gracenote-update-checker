@@ -2,8 +2,9 @@ name: Gracenote Update Checker
 
 on:
   schedule:
-    # 毎日 午前 9:00 (JST) = 0:00 (UTC) に実行
-    - cron: '0 0 * * *'
+    # 毎週金曜日 17:00 (JST) = 8:00 (UTC) に実行
+    - cron: '0 8 * * 5'
+
   workflow_dispatch: # GitHub UIからの手動実行も許可
 
 jobs:

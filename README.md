@@ -11,7 +11,8 @@
 - **更新自動検知**: Mazda Connect v2 ページを自動解析し、`Gracenote_[バージョン]_JP.mcg` の更新を検知
 - **Discord 通知**: 新旧バージョン・ファイル名・ダウンロードURLをリッチな Embed メッセージで通知
 - **ノーメンテナンス運用**: 検知した最新情報を `state.json` に保存
-- **GitHub Actions 自動化**: 1日1回の定時実行と、`state.json` の自動 Push に対応
+- **GitHub Actions 自動化**: 毎週金曜日17:00(JST)の定時実行と、`state.json` の自動 Push に対応
+
 
 ---
 
