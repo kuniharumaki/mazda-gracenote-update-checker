@@ -74,3 +74,53 @@ def send_discord_notification(
     except Exception as e:
         logger.error(f"Discord への通知送信に失敗しました: {e}")
         return False
+
+def send_discord_error_notification(
+    webhook_url: str,
+    error_message: str,
+    error_time: str
+) -> bool:
+    """
+    スクリプト実行エラー時に Discord Webhook へ警告通知を送信する
+    """
+    if not webhook_url:
+        logger.warning("Discord Webhook URL が設定されていないため、エラー通知をスキップします。")
+        return False
+
+    embed = {
+        "title": "⚠️ [エラー] Mazda Gracenote チェッカーの実行に失敗しました",
+        "description": "監視処理中に異常が発生しました。サイト構造の変更や通信障害の可能性があります。",
+        "url": "https://www.mazda.co.jp/owner_support/mazda-connect/v2/",
+        "color": 15158332,  # 警告赤 (#E74C3C)
+        "fields": [
+            {
+                "name": "エラーメッセージ",
+                "value": f"```\n{error_message}\n```",
+                "inline": False
+            },
+            {
+                "name": "発生日時",
+                "value": error_time,
+                "inline": False
+            }
+        ],
+        "footer": {
+            "text": "Mazda Gracenote Update Checker (Error Alert)"
+        }
+    }
+
+    payload = {
+        "username": "Mazda Gracenote Checker",
+        "avatar_url": "https://www.mazda.co.jp/favicon.ico",
+        "embeds": [embed]
+    }
+
+    try:
+        response = requests.post(webhook_url, json=payload, timeout=10)
+        response.raise_for_status()
+        logger.info("Discord へのエラー通知送信が成功しました。")
+        return True
+    except Exception as e:
+        logger.error(f"Discord へのエラー通知送信に失敗しました: {e}")
+        return False
+

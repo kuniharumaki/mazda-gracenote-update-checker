@@ -8,13 +8,14 @@ import requests
 from bs4 import BeautifulSoup
 
 from config import TARGET_URL, STATE_FILE, DISCORD_WEBHOOK_URL, HTTP_HEADERS
-from notifier import send_discord_notification
+from notifier import send_discord_notification, send_discord_error_notification
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 logger = logging.getLogger(__name__)
 
 # 日本標準時 JST (UTC+9)
 JST = timezone(timedelta(hours=9))
+
 
 def fetch_gracenote_info() -> dict:
     """
@@ -87,8 +88,12 @@ def main():
         logger.info(f"最新取得結果: バージョン={current_info['version']}, ファイル名={current_info['filename']}")
         logger.info(f"URL: {current_info['url']}")
     except Exception as e:
-        logger.error(f"Gracenote 情報の取得に失敗しました: {e}")
+        error_msg = str(e)
+        now_jst = datetime.now(JST).isoformat()
+        logger.error(f"Gracenote 情報の取得に失敗しました: {error_msg}")
+        send_discord_error_notification(DISCORD_WEBHOOK_URL, error_msg, now_jst)
         sys.exit(1)
+
 
     if args.dry_run:
         logger.info("Dry-run モードのため終了します。")
