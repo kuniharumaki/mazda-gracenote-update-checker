@@ -34,5 +34,6 @@ jobs:
       - name: Auto-commit updated state.json
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "chore(state): update Gracenote version state [skip ci]"
-          file_pattern: "state.json"
+          commit_message: "chore(state): update Gracenote check state [skip ci]"
+          file_pattern: "state.json HISTORY.md"
+

@@ -2,7 +2,7 @@
 
 マツダ公式ウェブサイト（[Mazda Connect v2 ページ](https://www.mazda.co.jp/owner_support/mazda-connect/v2/)）で公開されている Gracenote メディアデータベース更新ファイル（`.mcg`）のリンクおよびバージョン番号を定期チェックし、更新があった際に **Discord** へ自動通知するシステムです。
 
-検知した新バージョン情報は `state.json` に保存され、自動コミット機能によりノーメンテナンスで次回の監視基準へと自律更新されます。
+検知した新バージョン情報は `state.json` に保存され、自動コミット機能によりノーメンテナンスで次回の監視基準へと自律更新されます。また、すべてのチェック結果は `HISTORY.md` に時系列で記録され、GitHub 上で履歴を一覧できます。
 
 ---
 
@@ -10,8 +10,9 @@
 
 - **更新自動検知**: Mazda Connect v2 ページを自動解析し、`Gracenote_[バージョン]_JP.mcg` の更新を検知
 - **Discord 通知**: 新旧バージョン・ファイル名・ダウンロードURLをリッチな Embed メッセージで通知
+- **チェック履歴**: すべてのチェック結果（更新あり・なし・エラー）を `HISTORY.md` に Markdown テーブルで記録
 - **ノーメンテナンス運用**: 検知した最新情報を `state.json` に保存
-- **GitHub Actions 自動化**: 毎週金曜日17:00(JST)の定時実行と、`state.json` の自動 Push に対応
+- **GitHub Actions 自動化**: 毎週金曜日17:00(JST)の定時実行と、`state.json` / `HISTORY.md` の自動 Push に対応
 
 
 ---
@@ -69,6 +70,8 @@ python check_gracenote.py --force-notify
 
 - `check_gracenote.py`: メイン監視スクリプト
 - `notifier.py`: Discord Webhook 送信処理
+- `history.py`: チェック履歴の記録処理（HISTORY.md への追記）
 - `config.py`: 設定ファイル
 - `state.json`: 現在の Gracenote バージョン情報保持用ファイル
+- `HISTORY.md`: チェック履歴（自動生成・自動更新）
 - `templates/check_update.yml`: GitHub Actions 用ワークフロー定義

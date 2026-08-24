@@ -1,5 +1,6 @@
 import json
 import logging
+import os
 import re
 import sys
 import argparse
@@ -9,6 +10,7 @@ from bs4 import BeautifulSoup
 
 from config import TARGET_URL, STATE_FILE, DISCORD_WEBHOOK_URL, HTTP_HEADERS
 from notifier import send_discord_notification, send_discord_error_notification
+from history import append_history
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 logger = logging.getLogger(__name__)
@@ -77,11 +79,22 @@ def save_state(state: dict) -> None:
         json.dump(state, f, ensure_ascii=False, indent=2)
     logger.info(f"state.json を更新しました: バージョン {state.get('version')}")
 
+def _detect_trigger() -> tuple[str, str]:
+    """実行トリガーと Run ID を環境変数から判定する"""
+    event_name = os.environ.get("GITHUB_EVENT_NAME", "")
+    run_id = os.environ.get("GITHUB_RUN_ID", "-")
+    if event_name:
+        return event_name, run_id
+    return "local", "-"
+
+
 def main():
     parser = argparse.ArgumentParser(description="Mazda Connect v2 Gracenote 更新チェッカー")
     parser.add_argument("--force-notify", action="store_true", help="バージョン変更有無に関わらずテスト通知を送信する")
     parser.add_argument("--dry-run", action="store_true", help="取得のみ行い、状態更新や通知は行わない")
     args = parser.parse_args()
+
+    trigger, run_id = _detect_trigger()
 
     try:
         current_info = fetch_gracenote_info()
@@ -92,6 +105,15 @@ def main():
         now_jst = datetime.now(JST).isoformat()
         logger.error(f"Gracenote 情報の取得に失敗しました: {error_msg}")
         send_discord_error_notification(DISCORD_WEBHOOK_URL, error_msg, now_jst)
+
+        # エラー時の履歴記録
+        append_history(
+            checked_at=now_jst,
+            status="error",
+            trigger=trigger,
+            run_id=run_id,
+            error_message=error_msg,
+        )
         sys.exit(1)
 
 
@@ -122,8 +144,32 @@ def main():
 
         # 状態保存 (最新情報で上書き)
         save_state(current_info)
+
+        # 更新検知の履歴記録
+        append_history(
+            checked_at=current_info["last_updated"],
+            status="updated",
+            version=current_info["version"],
+            previous_version=saved_version or "初検知",
+            filename=current_info["filename"],
+            download_url=current_info["url"],
+            trigger=trigger,
+            run_id=run_id,
+        )
     else:
         logger.info(f"更新はありませんでした。（現在のバージョン: {saved_version}）")
 
+        # 更新なしの履歴記録
+        append_history(
+            checked_at=current_info["last_updated"],
+            status="no_change",
+            version=current_info["version"],
+            filename=current_info["filename"],
+            download_url=current_info["url"],
+            trigger=trigger,
+            run_id=run_id,
+        )
+
 if __name__ == "__main__":
     main()
+
