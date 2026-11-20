@@ -2,6 +2,7 @@
 
 | チェック日時 | ステータス | バージョン | 旧バージョン | ファイル名 | ダウンロードURL | トリガー | Run ID | エラー |
 |---|---|---|---|---|---|---|---|---|
+| 2026-11-21T01:40:22.172883+09:00 | ➖ no_change | 1.1.1.03656 | - | Gracenote_1.1.1.03656_JP.mcg | [link](https://www2.mazda.co.jp/carlife/mazda-connect/v2/support/Gracenote_1.1.1.03656_JP.mcg) | schedule | 44775676881 | - |
 | 2026-11-14T00:53:46.072754+09:00 | ➖ no_change | 1.1.1.03656 | - | Gracenote_1.1.1.03656_JP.mcg | [link](https://www2.mazda.co.jp/carlife/mazda-connect/v2/support/Gracenote_1.1.1.03656_JP.mcg) | schedule | 43457149605 | - |
 | 2026-11-07T00:38:29.952145+09:00 | ➖ no_change | 1.1.1.03656 | - | Gracenote_1.1.1.03656_JP.mcg | [link](https://www2.mazda.co.jp/carlife/mazda-connect/v2/support/Gracenote_1.1.1.03656_JP.mcg) | schedule | 42244911159 | - |
 | 2026-10-30T23:48:00.837251+09:00 | ➖ no_change | 1.1.1.03656 | - | Gracenote_1.1.1.03656_JP.mcg | [link](https://www2.mazda.co.jp/carlife/mazda-connect/v2/support/Gracenote_1.1.1.03656_JP.mcg) | schedule | 41074806736 | - |
